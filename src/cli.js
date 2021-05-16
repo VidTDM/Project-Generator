@@ -63,7 +63,7 @@ async function promptForMissingOptions(options) {
         ...options,
         name: options.name || answers.name,
         css: options.css || answers.css,
-        js: options.js || answers.js    
+        js: options.js || answers.js
     }
 }
 
