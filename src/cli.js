@@ -5,9 +5,10 @@ import { files } from './files.js';
 function parseArgumentsIntoOptions(rawArgs) {
     const args = arg(
         {
-            '--yes': Boolean,
-            '--css': Boolean,
-            '--js': Boolean,
+            '--none': Boolean,
+            '--all': Boolean,
+            '-n': Boolean,
+            '-a': Boolean
         },
         {
             argv: rawArgs.slice(2)
@@ -15,60 +16,105 @@ function parseArgumentsIntoOptions(rawArgs) {
     )
     return {
         name: args._[0],
-        skipPrompts: args['--yes'] || false,
-        css: args['--css'] || false,
-        js: args['--js'] || false
+        skipPrompts: args['-none'] || args['-n'] ||false,
+        all: args['--all'] || args['-a'] || false,
     }
 }
 
 async function promptForMissingOptions(options) {
-    const defaultName = 'project'
+    const defaultName = 'project';
     if (options.skipPrompts) {
         return {
             ...options,
             name: options.name || defaultName
         }
+    } if (options.all) {
+        return {
+            css: true,
+            js: true,
+            name: options.name || defaultName
+        }
     }
 
-    const questions = [];
+    const questionsNormal = [];
     if (!options.name) {
-        questions.push({
+        questionsNormal.push({
             type: 'input',
             name: 'name',
-            message: 'What is the name of your project',
+            message: 'What is the name of your project?',
             default: 'project'
         });
     }
 
-    if (!options.css) {
-        questions.push({
+    questionsNormal.push({
+        type: 'confirm',
+        name: 'css',
+        message: 'Do you want CSS in you project?',
+        default: false
+    });
+
+    questionsNormal.push({
+        type: 'confirm',
+        name: 'js',
+        message: 'Do you want Javascript in you project?',
+        default: false
+    });
+
+    questionsNormal.push({
+        type: 'confirm',
+        name: 'preproccesors',
+        message: 'Do you want Preproccesors in your project?',
+        default: false
+    });
+
+    const answersNormal = await inquirer.prompt(questionsNormal);
+
+    const questionsPre = [];
+    if (answersNormal.preproccesors) {
+        questionsPre.push({
             type: 'confirm',
-            name: 'css',
-            message: 'Do you want css in you project',
+            name: 'pug',
+            message: 'Do you want Pug(Jade) in your project?',
             default: false
         });
+
+        if (answersNormal.css) {
+            questionsPre.push({
+                type: 'list',
+                name: 'cssPre',
+                message: 'Do you want Sass or Scss in your project',
+                choices: [
+                    'SCSS',
+                    'SASS',
+                    'None'
+                ]
+            });
+        }
+
+        if (answersNormal.js) {
+            questionsPre.push({
+                type: 'confirm',
+                name: 'ts',
+                message: 'Do you want Typescript in your project',
+                default: true
+            });
+        }
     }
 
-    if (!options.js) {
-        questions.push({
-            type: 'confirm',
-            name: 'js',
-            message: 'Do you want javascript in you project',
-            default: false
-        });
-    }
-
-    const answers = await inquirer.prompt(questions);
+    const answersPre = await inquirer.prompt(questionsPre);
     return {
         ...options,
-        name: options.name || answers.name,
-        css: options.css || answers.css,
-        js: options.js || answers.js
+        name: options.name || answersNormal.name,
+        css: answersNormal.css,
+        js: answersNormal.js,
+        pug: answersPre.pug || false,
+        cssPre: answersPre.cssPre || false,
+        ts: answersPre.ts || false,
     }
 }
 
 export async function cli(args) {
     let options = parseArgumentsIntoOptions(args);
     options = await promptForMissingOptions(options);
-    files(options.name, options.css, options.js)
+    files(options.name, options.css, options.js, options.pug, options.cssPre, options.ts);
 }

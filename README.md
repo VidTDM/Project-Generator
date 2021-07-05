@@ -28,11 +28,11 @@ $ create-project
 
 Then It Will Ask you some questions.
 
-![Picture Of Questions](no-color.png)
+![Picture Of Questions](https://media.discordapp.net/attachments/770153101251969025/843698162073075732/no-color.png)
 
 With color.
 
-![Picture Of Questions With Color](color.png)
+![Picture Of Questions With Color](https://media.discordapp.net/attachments/770153101251969025/843698159157772318/color.png)
 
 It's bit different because of different terminals.
 
@@ -42,23 +42,13 @@ It's bit different because of different terminals.
 
 ## Flags
 
-- `--css`
+- `--none`
 
-  `--css` is for saying yes to having css in your project
+  `--none` is usefull when you want to generate a basic project with only html
 
-- `--js`
+- `--all`
 
-  `--js` is for saying yes to having js in your project
-
-- `--yes`
-
-  `--yes` is useful when you want to generate basic project with only html
-
-### Here's list of all the Flags
-
-- `--css`
-- `--js`
-- `--yes`
+  `--all` is usefull when you want to generate a project with all files
 
 **_Note:_** _When you don't give it a name it defaults to project._
 
@@ -66,6 +56,8 @@ It's bit different because of different terminals.
 
 ## What's Next?
 
-I am probably going to add a `--all` flag which will generate a project with all files.
+Able to generate different types of projects like `CLI`, `Discord Bot` etc.
 
-Also I may add the ability to add preproccesors like `sass`, `pug`, `less`, `haml`, `typescript`, `coffescript`
+----------
+
+I told that I would add languages like `haml`, `coffescript` and `postCSS` but I didn't because those languages are kind of dead :skull:
